@@ -2,15 +2,16 @@ const user = require("../models/user-model");
 const blog = require("../models/blogs-model");
 const { generateToken } = require("../utils/jwttoken");
 const { encryptPassword, comparePassword } = require("../utils/password");
-const {} = require("../utils/password_generator");
-const generatePassword = require("../utils/password_generator");
+const verifyOTP = require("../utils/verify-otp");
+
 const {sendOtpForEmailverification,sendOtpForPasswordReset} = require("../utils/mailService");
+const otp_model = require("../models/otp-model");
 
 
 ///function to create account of user
 async function signUpUser(req, res) {
     //get user data from request
-    const { fullName, email, password} = req.body;
+    const { fullName, email, password } = req.body;
 
     //check if user is allready exist
     const userExists = await user.findOne({ email });
@@ -34,10 +35,17 @@ async function signUpUser(req, res) {
         //generate jwt token for user
         const token = await generateToken(newUser);
 
-        
+        //generate and send otp
+        const otp = await sendOtpForEmailverification(email);
+
+        //save otp
+        await otp_model.create({
+            email:email,
+            otp:otp,
+        });        
 
         //send response that user is created and also send token
-        res.status(201).json({ status: 201, message: "User created", "token": token, "user": newUser });
+        res.status(201).json({ status: 201, message: "OTP-sent-successfully", "token": token, "user": newUser });
     } catch (error) {
         console.log(`ERROR in create user or token generation ${error}`);
 
@@ -132,9 +140,12 @@ async function sendOTPforPasswordreset(req,res){
 
     try {          
         //send otp to email
-        const info = await sendOtpForPasswordReset(email);
+        const otp = await sendOtpForPasswordReset(email);
 
-              
+        await otp_model.create({
+            email:email,
+            otp:otp,
+        })
 
         //send response
         res.status(200).json({status:200,message:"otp-sent-to-email"});
@@ -144,7 +155,27 @@ async function sendOTPforPasswordreset(req,res){
         
         
     }
+}
 
+//verify otp
+async function otpverification(req,res){
+    const email = req.query.EMAIL;
+    const otp = req.query.OTP;
+
+   try {
+     //verify if otp is valid
+     const result = await verifyOTP(email,otp);
+   
+     if (!result) {        
+         //if otp is ok
+         res.status(400).json({status:400,message:"invalid-otp"});
+     }   
+
+     //if otp is ok
+     res.status(200).json({status:200,message:"Otp-verified"});        
+   } catch (error) {
+    
+   }
 
 }
 
@@ -155,4 +186,5 @@ module.exports = {
     updateProfileImage,
     deleteUserAccount,
     sendOTPforPasswordreset,
+    otpverification,
 }

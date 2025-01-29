@@ -4,7 +4,8 @@ const {
     loginUser,
     updateProfileImage,
     deleteUserAccount,
-    sendOTPforPasswordreset
+    sendOTPforPasswordreset,
+    otpverification
 } = require("../controllers/user-controller");
 const { verifyAuthorization } = require("../middlewares/auth-middleware");
 
@@ -23,6 +24,9 @@ router.delete("/deleteaccount",verifyAuthorization,deleteUserAccount);
 
 //route send otp to user email for password reset
 router.get("/sendotp",sendOTPforPasswordreset);
+
+//route for verifying otp
+router.get("/verifyotp",otpverification);
 
 //exports the router
 module.exports = router

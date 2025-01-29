@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
 const dotenv = require("dotenv");
+const otp_generator = require("../utils/otp_generator");
+
 
 dotenv.config();
 
@@ -18,40 +20,57 @@ const mailTransporter = nodemailer.createTransport({
 
 //function to send otp for password reset
 async function sendOtpForPasswordReset(email){
+
+    //generate otp
+    const otp = otp_generator();
+
+
+    
     await mailTransporter.sendMail({
         from: `"BlogSpot -share your Knowledge 👻" <${process.env.SERVICE_EMAIL}>`,
         to:email,
         subject:"Your One-Time Password (OTP)",
-        text:`Hello, \n\nYour OTP for password reset is: 1234 \n\nIf you didn’t request this, please ignore this email.\n\nBest Regards,\nBlogSpot Team`,
+        text:`Hello, \n\nYour OTP for password reset is: ${otp} \n\nIf you didn’t request this, please ignore this email.\n\nBest Regards,\nBlogSpot Team`,
         html:`
         <div style="font-family: Arial, sans-serif; color: #333;">
             <h3>Hello,</h3>
-            <h2>Your OTP for password reset is: <strong>19934</strong></h2>
+            <h2>Your OTP for password reset is: <strong>${otp}</strong></h2>
             <p>If you didn't request this, please ignore this email.</p>
             <p>Best Regards,<br>BlogSpot Team</p>
         </div>`,   
         
     });
+
+    return otp;
 
 }
 
 
 //function to send otp for email verification
 async function sendOtpForEmailverification(email){
+
+    //generate otp
+    const otp = otp_generator();
+
+
+
     await mailTransporter.sendMail({
         from:`"BlogSpot -share your Knowledge 👻" <${process.env.SERVICE_EMAIL}>`,
         to:email,
         subject:"Your One-Time Password (OTP)",
-        text:`Hello, \n\nYour OTP for Email verification is: 1234 \n\nIf you didn’t request this, please ignore this email.\n\nBest Regards,\nBlogSpot Team`,
+        text:`Hello, \n\nYour OTP for Email verification is: ${otp} \n\nIf you didn’t request this, please ignore this email.\n\nBest Regards,\nBlogSpot Team`,
         html:`
         <div style="font-family: Arial, sans-serif; color: #333;">
             <h2>Hello,</h2>
-            <p>Your OTP for Email verification is: <strong>1234</strong></p>
+            <p>Your OTP for Email verification is: <strong>${otp}</strong></p>
             <p>If you didn't request this, please ignore this email.</p>
             <p>Best Regards,<br>BlogSpot Team</p>
         </div>`,   
         
     });
+
+    return otp;
+    
 }
 
 
