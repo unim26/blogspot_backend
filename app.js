@@ -4,11 +4,11 @@ const connecttodb = require("./utils/db");
 const userRoute = require("./Routes/user-routes");
 const blogRoute = require("./Routes/blog-routes");
 const { verifyAuthorization } = require("./middlewares/auth-middleware");
-
-
+ 
+ 
 //configure env file
 dotenv.config();
-
+ 
 
 
 //connect to database
