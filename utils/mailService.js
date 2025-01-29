@@ -1,4 +1,7 @@
 const nodemailer = require('nodemailer');
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 
 //initialize mail transporter first
@@ -7,8 +10,8 @@ const mailTransporter = nodemailer.createTransport({
     port: 465,
     secure:true,
     auth: {
-      user: "blogspotservice1@gmail.com",
-      pass: "azlp amcf wtzw ruan"
+      user: process.env.SERVICE_EMAIL,
+      pass: process.env.SERVICE_EMAIL_PASSWORD,
     }
   });
 
@@ -16,7 +19,7 @@ const mailTransporter = nodemailer.createTransport({
 //function to send otp for password reset
 async function sendOtpForPasswordReset(email){
     await mailTransporter.sendMail({
-        from:'"BlogSpot -share your Knowledge 👻" <blogspotservice1@gmail.com>',
+        from: `"BlogSpot -share your Knowledge 👻" <${process.env.SERVICE_EMAIL}>`,
         to:email,
         subject:"Your One-Time Password (OTP)",
         text:`Hello, \n\nYour OTP for password reset is: 1234 \n\nIf you didn’t request this, please ignore this email.\n\nBest Regards,\nBlogSpot Team`,
@@ -36,7 +39,7 @@ async function sendOtpForPasswordReset(email){
 //function to send otp for email verification
 async function sendOtpForEmailverification(email){
     await mailTransporter.sendMail({
-        from:'"BlogSpot -share your Knowledge 👻" <blogspotservice1@gmail.com>',
+        from:`"BlogSpot -share your Knowledge 👻" <${process.env.SERVICE_EMAIL}>`,
         to:email,
         subject:"Your One-Time Password (OTP)",
         text:`Hello, \n\nYour OTP for Email verification is: 1234 \n\nIf you didn’t request this, please ignore this email.\n\nBest Regards,\nBlogSpot Team`,
