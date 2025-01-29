@@ -22,14 +22,8 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    blogs:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Blog",          
-    }],
-    savedBlog:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Blog"
-    }],        
+    
+            
 },{timestamps: true},);
 
 const user = mongoose.model("User",userSchema);
