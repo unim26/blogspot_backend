@@ -186,6 +186,34 @@ async function otpverification(req, res) {
   } catch (error) {}
 }
 
+//change passsword
+async function changePassword(req,res){
+
+  const userid = req.id;
+  const oldPassword = req.query.OLDPASSWORD;
+  const newPassword = req.query.NEWPASSWORD;
+
+  try {
+    const currentuser = await user.findById({_id:userid});
+
+    const isPasswordCorrect = await comparePassword(oldPassword,currentuser.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(401).json({status:401,message:"password-incorrect"});
+    }
+
+    const newHasedPassword = await encryptPassword(newPassword);
+
+    await currentuser.updateOne({password:newHasedPassword});
+
+    res.status(200).json({status:200,message:"password-changed"});
+
+
+  } catch (error) {
+    res.status(500).json({status:500,message:"something-went-wrong"});
+  }
+}
+
 module.exports = {
   signUpUser,
   loginUser,
@@ -193,4 +221,5 @@ module.exports = {
   deleteUserAccount,
   sendOTPforPasswordreset,
   otpverification,
+  changePassword,
 };

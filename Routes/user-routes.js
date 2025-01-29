@@ -5,9 +5,11 @@ const {
     updateProfileImage,
     deleteUserAccount,
     sendOTPforPasswordreset,
-    otpverification
+    otpverification,
+    changePassword,
 } = require("../controllers/user-controller");
 const { verifyAuthorization } = require("../middlewares/auth-middleware");
+const isemailverified  = require("../middlewares/email-verification-middleware");
 
 
 //route for creating user account
@@ -27,6 +29,9 @@ router.get("/sendotp",sendOTPforPasswordreset);
 
 //route for verifying otp
 router.get("/verifyotp",otpverification);
+
+//route for change password
+router.patch("/changepassword",verifyAuthorization,isemailverified,changePassword);
 
 //exports the router
 module.exports = router
