@@ -10,12 +10,11 @@ const {
 } = require("../utils/mailService");
 const otp_model = require("../models/otp-model");
 
-
-
 ///function to create account of user
 async function signUpUser(req, res) {
   //get user data from request
   const { fullName, email, password } = req.body;
+
 
   //check if user is allready exist
   const userExists = await user.findOne({ email });
@@ -50,16 +49,13 @@ async function signUpUser(req, res) {
     });
 
     //send response that user is created and also send token
-    res
-      .status(201)
-      .json({
-        status: 201,
-        message: "OTP-sent-successfully",
-        token: token,
-        user: newUser,
-      });
+    res.status(201).json({
+      status: 201,
+      message: "OTP-sent-successfully",
+      token: token,
+      user: newUser,
+    });
   } catch (error) {
-    console.log(`ERROR in create user or token generation ${error}`);
   }
 }
 
@@ -101,16 +97,22 @@ async function updateProfileImage(req, res) {
   //get id of user
   const userId = req.query.USERID;
 
-  //get profile image link from body 
+  //get profile image link from body
   const imageUrl = req.query.IMAGEURL;
 
   try {
     //try to update profile image
-    await user.findByIdAndUpdate({ _id: userId }, { profileImage: imageUrl },{new:true});
+    await user.findByIdAndUpdate(
+      { _id: userId },
+      { profileImage: imageUrl },
+      { new: true }
+    );
 
-    res
-      .status(201)
-      .json({ status: 201, message: "profile successfully updated...!",imageurl:user.profileImage });
+    res.status(201).json({
+      status: 201,
+      message: "profile successfully updated...!",
+      imageurl: user.profileImage,
+    });
   } catch (error) {
     console.log(`ERROR in updating profile image ${error}`);
   }
@@ -160,6 +162,8 @@ async function sendOTPforPasswordreset(req, res) {
       otp: otp,
     });
 
+    console.log(`otp send successfullt to : ${email}`);
+
     //send response
     res.status(200).json({ status: 200, message: "otp-sent-to-email" });
   } catch (error) {
@@ -187,30 +191,32 @@ async function otpverification(req, res) {
 }
 
 //change passsword
-async function changePassword(req,res){
-
+async function changePassword(req, res) {
   const userid = req.id;
   const oldPassword = req.query.OLDPASSWORD;
   const newPassword = req.query.NEWPASSWORD;
 
   try {
-    const currentuser = await user.findById({_id:userid});
+    const currentuser = await user.findById({ _id: userid });
 
-    const isPasswordCorrect = await comparePassword(oldPassword,currentuser.password);
+    const isPasswordCorrect = await comparePassword(
+      oldPassword,
+      currentuser.password
+    );
 
     if (!isPasswordCorrect) {
-      return res.status(401).json({status:401,message:"password-incorrect"});
+      return res
+        .status(401)
+        .json({ status: 401, message: "password-incorrect" });
     }
 
     const newHasedPassword = await encryptPassword(newPassword);
 
-    await currentuser.updateOne({password:newHasedPassword});
+    await currentuser.updateOne({ password: newHasedPassword });
 
-    res.status(200).json({status:200,message:"password-changed"});
-
-
+    res.status(200).json({ status: 200, message: "password-changed" });
   } catch (error) {
-    res.status(500).json({status:500,message:"something-went-wrong"});
+    res.status(500).json({ status: 500, message: "something-went-wrong" });
   }
 }
 

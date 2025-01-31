@@ -15,7 +15,7 @@ async function verifyOTP(email,otp){
     const currentuser = await user.findOne({email})
 
     if (currentuser.isEmailVerified == false) {
-        await user.findOneAndUpdate({email},{isEmailVerified: true});
+        await user.findOneAndUpdate({email},{isEmailVerified: true},{new:true});
     }
 
     await otp_model.findOneAndDelete({email,otp});
