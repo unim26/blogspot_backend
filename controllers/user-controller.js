@@ -6,7 +6,7 @@ const verifyOTP = require("../utils/verify-otp");
 
 const {
   sendOtpForEmailverification,
-  sendOtpForPasswordReset,
+  // sendOtpForPasswordReset,
 } = require("../utils/mailService");
 const otp_model = require("../models/otp-model");
 
@@ -42,6 +42,8 @@ async function signUpUser(req, res) {
     //generate and send otp
     const otp = await sendOtpForEmailverification(email);
 
+    await otp_model.findOneAndDelete({email:email});
+
     //save otp
     await otp_model.create({
       email: email,
@@ -63,6 +65,7 @@ async function signUpUser(req, res) {
 async function loginUser(req, res) {
   //get user data from request
   const { email, password } = req.body;
+  
 
   //check if user is allready exist
   const userExists = await user.findOne({ email });
@@ -155,19 +158,19 @@ async function sendOTPforPasswordreset(req, res) {
 
   try {
     //send otp to email
-    const otp = await sendOtpForPasswordReset(email);
+    const otp = await sendOtpForEmailverification(email);
+
+    await otp_model.findOneAndDelete({email:email});
 
     await otp_model.create({
       email: email,
       otp: otp,
     });
 
-    console.log(`otp send successfullt to : ${email}`);
-
     //send response
     res.status(200).json({ status: 200, message: "otp-sent-to-email" });
   } catch (error) {
-    res.status(500).json({ status: 500, message: error });
+    res.status(500).json({ status: 500, message: error.message });
   }
 }
 
@@ -220,6 +223,31 @@ async function changePassword(req, res) {
   }
 }
 
+async function forgotPassword(req,res){
+  const email = req.query.EMAIL;
+  const password = req.query.WORD;
+
+  console.log(`emial : ${email}, password: ${password}`);
+  
+
+  try {
+    const hashedpassword = await encryptPassword(password);
+    console.log(`has : ${hashedpassword}`);
+    
+
+    const currentUser = await user.findOne({email:email});
+
+    console.log(`current user : ${currentUser}`);
+
+    await currentUser.updateOne({password:hashedpassword});
+    
+
+    res.status(201).json({status:201,message:"successfully-password-changed"});
+  } catch (error) {
+    res.status(400).json({status:400,message:"Something went wrong"})
+  }
+}
+
 module.exports = {
   signUpUser,
   loginUser,
@@ -228,4 +256,5 @@ module.exports = {
   sendOTPforPasswordreset,
   otpverification,
   changePassword,
+  forgotPassword,
 };

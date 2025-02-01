@@ -7,6 +7,7 @@ const {
     sendOTPforPasswordreset,
     otpverification,
     changePassword,
+    forgotPassword,
 } = require("../controllers/user-controller");
 const { verifyAuthorization } = require("../middlewares/auth-middleware");
 const isemailverified  = require("../middlewares/email-verification-middleware");
@@ -32,6 +33,9 @@ router.get("/verifyotp",otpverification);
 
 //route for change password
 router.patch("/changepassword",verifyAuthorization,isemailverified,changePassword);
+
+//route for forgotpassword
+router.patch("/forgotpassword",forgotPassword);
 
 //exports the router
 module.exports = router
