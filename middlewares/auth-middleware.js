@@ -9,6 +9,8 @@ async function verifyAuthorization(req, res, next) {
         //get token from request header
         const token = req.headers.authorization;
 
+        console.log(`user token ${token}`);
+
         //check if token is present
         if (!token) {
             return res.status(401).json({ status: 401, message: "Unauthorized" });

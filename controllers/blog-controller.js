@@ -43,7 +43,7 @@ async function getBlogs(req, res) {
       .populate({
         path: "comments",
         select: "comment commentby -_id",
-        populate: { path: "commentby", select: "fullName email -_id" },
+        populate: { path: "commentby", select: "fullName email profileImage -_id" },
       })
       .select("-createdAt -_id")
       .sort({ createdAt: -1 }) //sort newest one
@@ -52,9 +52,7 @@ async function getBlogs(req, res) {
 
     //send response
     res.status(200).json({
-      status: 200,
-      message: "All-blog-fetch-successfully",
-      blogs: blogs,
+       blogs,
     });
   } catch (error) {
     console.log(`ERROR in get blogs ${error}`);
