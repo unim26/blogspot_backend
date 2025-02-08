@@ -51,9 +51,7 @@ async function getBlogs(req, res) {
       .limit(parseInt(10)); //get only 10 blogs
 
     //send response
-    res.status(200).json({
-       blogs,
-    });
+    res.status(200).send(blogs);
   } catch (error) {
     console.log(`ERROR in get blogs ${error}`);
   }
