@@ -15,13 +15,15 @@ connecttodb(process.env.MONGO_DB_URL);
 const app = express();
 
 //use json structure
-app.use(express.json());
+app.use(express.json()); 
 
 //routes
 //default route
 app.get("/", (re, res) => {
   res.status(200).json({ status: 200, message: "Welcome to BlogSpot" });
 });
+
+
 //user route
 app.use("/user", userRoute);
 

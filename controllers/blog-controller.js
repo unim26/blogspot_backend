@@ -34,17 +34,21 @@ async function createBlog(req, res) {
 
 //function to get all blogs
 async function getBlogs(req, res) {
+  const page = req.query.PAGE;
   try {
     //get all blogs
     const blogs = await blog_model
       .find({})
-      .populate("author", "fullName email -_id")
+      .populate("author", "fullName email profileImage -_id")
       .populate({
         path: "comments",
         select: "comment commentby -_id",
         populate: { path: "commentby", select: "fullName email -_id" },
       })
-      .select("-createdAt -_id");
+      .select("-createdAt -_id")
+      .sort({ createdAt: -1 }) //sort newest one
+      .skip((page - 1) * 10) //skip previous page
+      .limit(parseInt(10)); //get only 10 blogs
 
     //send response
     res.status(200).json({
@@ -142,15 +146,14 @@ async function getOwnBlogs(req, res) {
         path: "comments",
         select: "comment commentby -_id",
         populate: { path: "commentby", select: "fullName email -_id" },
-      }).select("-createdAt -_id")
+      })
+      .select("-createdAt -_id")
       .then((val) => {
-        res
-          .status(200)
-          .json({
-            status: 200,
-            message: "successfully-fetch-all-owned-blogs",
-            myblogs: val,
-          });
+        res.status(200).json({
+          status: 200,
+          message: "successfully-fetch-all-owned-blogs",
+          myblogs: val,
+        });
       });
   } catch (error) {
     res.status(500).json({ status: 500, message: "something-went-wrong" });

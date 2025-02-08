@@ -10,7 +10,12 @@ const {
 } = require("../utils/mailService");
 const otp_model = require("../models/otp-model");
 
-///function to create account of user
+
+
+//<========================================functions
+
+
+///<=============================function to create account of user
 async function signUpUser(req, res) {
   //get user data from request
   const { fullName, email, password } = req.body;
@@ -39,16 +44,16 @@ async function signUpUser(req, res) {
     //generate jwt token for user
     const token = await generateToken(newUser);
 
-    //generate and send otp
-    const otp = await sendOtpForEmailverification(email);
+    // //generate and send otp
+    // const otp = await sendOtpForEmailverification(email);
 
-    await otp_model.findOneAndDelete({email:email});
+    // await otp_model.findOneAndDelete({email:email});
 
     //save otp
-    await otp_model.create({
-      email: email,
-      otp: otp,
-    });
+    // await otp_model.create({
+    //   email: email,
+    //   otp: otp,
+    // });
 
     //send response that user is created and also send token
     res.status(201).json({
@@ -61,7 +66,7 @@ async function signUpUser(req, res) {
   }
 }
 
-//function to login user
+//<================================function to login user
 async function loginUser(req, res) {
   //get user data from request
   const { email, password } = req.body;
@@ -95,7 +100,7 @@ async function loginUser(req, res) {
     .json({ message: "User-logged-in", token, user: userExists });
 }
 
-//function to update profile photo
+//<====================================function to update profile photo
 async function updateProfileImage(req, res) {
   //get id of user
   const userId = req.query.USERID;
@@ -121,7 +126,7 @@ async function updateProfileImage(req, res) {
   }
 }
 
-//function to delete account
+//<===============================function to delete account
 async function deleteUserAccount(req, res) {
   //get user id from query
   const userId = req.query.USERID;
@@ -141,7 +146,7 @@ async function deleteUserAccount(req, res) {
   }
 }
 
-//send opt to email for password reset
+//<========================send opt to email for password reset
 async function sendOTPforPasswordreset(req, res) {
   //get email from request
   const email = req.query.EMAIL;
@@ -174,7 +179,7 @@ async function sendOTPforPasswordreset(req, res) {
   }
 }
 
-//verify otp
+//<============================verify otp
 async function otpverification(req, res) {
   const email = req.query.EMAIL;
   const otp = req.query.OTP;
@@ -193,7 +198,7 @@ async function otpverification(req, res) {
   } catch (error) {}
 }
 
-//change passsword
+//<===========================change passsword
 async function changePassword(req, res) {
   const userid = req.id;
   const oldPassword = req.query.OLDPASSWORD;
