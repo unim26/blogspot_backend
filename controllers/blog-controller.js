@@ -43,7 +43,8 @@ async function getBlogs(req, res) {
       .populate({
         path: "comments",
         select: "comment commentby -_id",
-        populate: { path: "commentby", select: "fullName email profileImage -_id" },
+        populate: { path: "commentby", select: "fullName email profileImage -_id" ,          
+        },
       })
       .select("-createdAt -_id")
       .sort({ createdAt: -1 }) //sort newest one
@@ -51,7 +52,7 @@ async function getBlogs(req, res) {
       .limit(parseInt(10)); //get only 10 blogs
 
     //send response
-    res.status(200).send(blogs);
+    res.status(200).send({status:200,message:"All blogs fetched " ,blogs: blogs});
   } catch (error) {
     console.log(`ERROR in get blogs ${error}`);
   }
@@ -63,6 +64,13 @@ async function deleteBlogById(req, res) {
   const blogId = req.query.BLOGID;
 
   try {
+
+    // Find the blog
+    const blog = await blog_model.findById(blogId);
+
+    //delete comments first
+    await comment_model.deleteMany({ _id: { $in: blog.comments } });
+    
     //try to delete blog
     await blog_model.findByIdAndDelete({ _id: blogId });
 
@@ -71,6 +79,8 @@ async function deleteBlogById(req, res) {
       { _id: req.id },
       { $pull: { blogs: blogId } }
     );
+
+
 
     res
       .status(200)
