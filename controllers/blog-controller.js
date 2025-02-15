@@ -34,7 +34,7 @@ async function createBlog(req, res) {
 
 //function to get all blogs
 async function getBlogs(req, res) {
-  const page = req.query.PAGE;
+  // const page = req.query.PAGE;
   try {
     //get all blogs
     const blogs = await blog_model
@@ -48,10 +48,10 @@ async function getBlogs(req, res) {
           select: "fullName email profileImage -_id",
         },
       })
-      .select("-createdAt -_id")
-      .sort({ createdAt: -1 }) //sort newest one
-      .skip((page - 1) * 10) //skip previous page
-      .limit(parseInt(10)); //get only 10 blogs
+      .select("-createdAt -_id");
+      // .sort({ createdAt: -1 }) //sort newest one
+      // .skip((page - 1) * 10) //skip previous page
+      // .limit(parseInt(10)); //get only 10 blogs
 
     //send response
     res.status(200).send(blogs);
