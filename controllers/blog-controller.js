@@ -143,8 +143,7 @@ async function commentOnBlogById(req, res) {
 async function getOwnBlogs(req, res) {
   const userid = req.id;
 
-  console.log(`get my blog request got`);
-  console.log(`user id ${userid}`);
+ 
 
 
   try {
