@@ -153,12 +153,8 @@ async function getOwnBlogs(req, res) {
         populate: { path: "commentby", select: "fullName email -_id" },
       })
       .select("-createdAt -_id")
-      .then((val) => {
-        res.status(200).json({
-          status: 200,
-          message: "successfully-fetch-all-owned-blogs",
-          myblogs: val,
-        });
+      .then((myblogs) => {
+        res.status(200).send(val);
       });
   } catch (error) {
     res.status(500).json({ status: 500, message: "something-went-wrong" });

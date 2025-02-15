@@ -24,7 +24,7 @@ app.get("/", (re, res) => {
 });
 
 
-//user route
+//user route 
 app.use("/user", userRoute);
 
 //blog route
