@@ -154,7 +154,7 @@ async function getOwnBlogs(req, res) {
       .populate({
         path: "comments",
         select: "comment commentby -_id",
-        populate: { path: "commentby", select: "fullName email -_id" },
+        populate: { path: "commentby", select: "fullName email profileImage -_id" },
       })
       .select("-createdAt -_id")
       .then((myblogs) => {
