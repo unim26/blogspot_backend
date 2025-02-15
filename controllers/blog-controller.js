@@ -143,6 +143,10 @@ async function commentOnBlogById(req, res) {
 async function getOwnBlogs(req, res) {
   const userid = req.id;
 
+  console.log(`get my blog request got`);
+  console.log(`user id ${userid}`);
+
+
   try {
     await blog_model
       .find({ author: userid })
@@ -154,9 +158,12 @@ async function getOwnBlogs(req, res) {
       })
       .select("-createdAt -_id")
       .then((myblogs) => {
-        res.status(200).send(val);
+        res.status(200).send(myblogs);
       });
   } catch (error) {
+
+    console.log(`error ${error}`);
+
     res.status(500).json({ status: 500, message: "something-went-wrong" });
   }
 }
