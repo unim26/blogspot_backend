@@ -143,13 +143,13 @@ async function commentOnBlogById(req, res) {
 async function getOwnBlogs(req, res) {
   const userid = req.id;
 
- 
+
 
 
   try {
     await blog_model
       .find({ author: userid })
-      .populate("author", "fullName email -_id")
+      .populate("author", "fullName email profileImage -_id")
       .populate({
         path: "comments",
         select: "comment commentby -_id",
